@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap Desk — S2 2026</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --panel:#ffffff; --ink:#1f2733; --muted:#6b7688;
+    --line:#e3e8ef; --accent:#2f6feb;
+    --desk:#2f6feb; --desk-bg:#e8f0fe;
+    --portail:#7c3aed; --portail-bg:#f1eafe;
+    --avenir:#64748b; --avenir-bg:#eef1f6;
+    --encours:#2f6feb; --encours-bg:#e8f0fe;
+    --risque:#e0872b; --risque-bg:#fdf1e2;
+    --livre:#2e9e5b; --livre-bg:#e7f6ec;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 26px 14px;height:100vh;
+    display:flex;flex-direction:column;}
+
+  header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:6px;}
+  h1{font-size:26px;margin:0 0 4px;font-weight:700;letter-spacing:-.2px;outline:none;}
+  .subtitle{color:var(--muted);font-size:14px;margin:0;outline:none;max-width:640px;}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel);
+    color:var(--ink);border-radius:9px;padding:9px 14px;font-size:13.5px;font-weight:600;
+    transition:.15s;white-space:nowrap;}
+  button:hover{border-color:var(--accent);color:var(--accent);}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  button.primary:hover{filter:brightness(1.05);color:#fff;}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:18px 0 20px;font-size:13px;color:var(--muted);}
+  .hint{font-size:12.5px;color:var(--muted);font-style:italic;}
+
+  .boardwrap{position:relative;flex:1;min-height:0;display:flex;}
+  .board{display:grid;grid-template-columns:repeat(6,minmax(230px,1fr));grid-template-rows:1fr;gap:14px;
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;height:100%;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;
+    scroll-behavior:smooth;scrollbar-width:none;}
+  .board::-webkit-scrollbar{display:none;}
+  .col{min-width:230px;display:flex;flex-direction:column;min-height:0;}
+  .col h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);
+    margin:0 0 10px;padding:0 2px 8px;border-bottom:2px solid var(--line);text-align:center;font-weight:700;flex:none;}
+  .col .drop{flex:1;display:flex;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;
+    border-radius:10px;padding:2px;transition:.12s;}
+  .navbtn{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:38px;height:38px;
+    border-radius:50%;border:1px solid var(--line);background:#fff;box-shadow:0 2px 8px rgba(20,30,50,.18);
+    font-size:22px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;padding:0;transition:.15s;}
+  .navbtn:hover{border-color:var(--accent);color:var(--accent);}
+  .navbtn.left{left:-7px;} .navbtn.right{right:-7px;}
+  .navbtn.hidden{opacity:0;pointer-events:none;}
+  .col.over .drop{outline:2px dashed var(--accent);outline-offset:-2px;background:var(--encours-bg);}
+
+  .card{border:1px solid var(--line);border-left:5px solid var(--desk);border-radius:10px;
+    background:#fff;padding:10px 12px 12px;box-shadow:0 1px 2px rgba(20,30,50,.05);position:relative;}
+  .card.t-desk{border-left-color:var(--desk);}
+  .card.t-portail{border-left-color:var(--portail);}
+  .card.dragging{opacity:.45;}
+
+  .rtype{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;cursor:pointer;
+    user-select:none;flex:none;letter-spacing:.3px;}
+  .rtype.t-desk{background:var(--desk-bg);color:var(--desk);}
+  .rtype.t-portail{background:var(--portail-bg);color:var(--portail);}
+  .collapse{background:none;border:none;color:var(--muted);font-size:12px;font-weight:600;
+    padding:2px 0;cursor:pointer;align-self:flex-start;}
+  .collapse:hover{color:var(--accent);text-decoration:underline;}
+
+  .chead{display:flex;align-items:center;gap:7px;margin-bottom:2px;padding-right:16px;}
+  .grip{cursor:grab;color:#b7c0cf;font-size:15px;line-height:1;user-select:none;flex:none;
+    padding:2px 1px;letter-spacing:-2px;}
+  .grip:active{cursor:grabbing;}
+  .card .rel-title{font-weight:700;font-size:15px;outline:none;line-height:1.25;flex:1;}
+  .card .rel-date{font-size:12.5px;color:var(--muted);outline:none;margin:1px 0 0 22px;}
+  .feats{display:flex;flex-direction:column;gap:6px;margin:10px 0 6px;}
+  .feat{background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:6px 8px;
+    display:flex;align-items:flex-start;gap:6px;font-size:13px;line-height:1.35;}
+  .feat .ftxt{outline:none;flex:1;}
+  .feat .ftxt:empty::before{content:"Décrire la fonctionnalité…";color:#aab3c0;}
+  .feat .rmf{opacity:0;color:var(--muted);cursor:pointer;font-weight:700;padding:0 2px;flex:none;font-size:14px;}
+  .feat:hover .rmf{opacity:1;}
+  .feat .rmf:hover{color:#c0392b;}
+
+  .addfeat{align-self:flex-start;font-size:12px;color:var(--accent);background:none;border:none;
+    padding:2px 0;font-weight:600;}
+  .addfeat:hover{text-decoration:underline;}
+
+  .row2{display:flex;gap:6px;align-items:center;margin-top:10px;flex-wrap:wrap;
+    border-top:1px dashed var(--line);padding-top:9px;}
+  .row2 label{font-size:11px;color:var(--muted);}
+  .card select{font:inherit;font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:4px 6px;color:var(--ink);background:#fff;}
+  .card .del{position:absolute;top:8px;right:8px;border:none;background:none;color:var(--muted);
+    font-size:16px;line-height:1;padding:2px 4px;opacity:.5;}
+  .card .del:hover{color:#c0392b;opacity:1;background:none;}
+
+  .railhead{display:flex;align-items:center;gap:12px;margin:22px 0 9px;}
+  .railhead h3{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0;font-weight:700;}
+  .sprintrail{display:flex;gap:10px;padding:2px 16px 6px;overflow-x:auto;align-items:stretch;min-height:52px;}
+  .sprint{flex:1 1 0;min-width:150px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--accent);
+    border-radius:9px;padding:7px 22px 9px 8px;position:relative;box-shadow:0 1px 2px rgba(20,30,50,.05);}
+  .shead{display:flex;align-items:center;gap:5px;}
+  .sgrip{cursor:grab;color:#b7c0cf;font-size:14px;line-height:1;user-select:none;letter-spacing:-2px;padding:1px;flex:none;}
+  .sgrip:active{cursor:grabbing;}
+  .sprint.dragging{opacity:.4;border:2px dashed var(--accent);}
+  .sprint .sname{font-weight:700;font-size:13px;outline:none;line-height:1.2;flex:1;}
+  .sprint .sdate{font-size:11.5px;color:var(--muted);outline:none;margin-top:2px;}
+  .sprint .sname:empty::before{content:"Nom du sprint…";color:#aab3c0;}
+  .sprint .sdate:empty::before{content:"dates (ex. 07 → 25 juil.)";color:#aab3c0;}
+  .sprint .sdel{position:absolute;top:5px;right:6px;border:none;background:none;color:var(--muted);
+    cursor:pointer;font-size:14px;opacity:.5;line-height:1;padding:0 2px;}
+  .sprint .sdel:hover{color:#c0392b;opacity:1;background:none;}
+
+  footer{margin-top:10px;font-size:12px;color:var(--muted);text-align:center;flex:none;}
+  @media print{
+    .actions,.hint,.addfeat,.del,.rmf,.grip,.sgrip,.row2,.sdel,.navbtn{display:none!important;}
+    body{background:#fff;}
+    .wrap{height:auto;display:block;}
+    .boardwrap{display:block;}
+    .board{overflow:visible;height:auto;grid-template-rows:auto;}
+    .col,.col .drop{overflow:visible;min-height:0;}
+    .sprintrail{overflow:visible;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 contenteditable="true" data-meta="title">Roadmap Desk — 2<sup>e</sup> semestre 2026</h1>
+      <p class="subtitle" contenteditable="true" data-meta="subtitle">Vision grosse maille des prochaines releases et de leurs grandes fonctionnalités. Cliquez sur n'importe quel texte pour l'éditer.</p>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="addRelease()">+ Ajouter une release</button>
+      <button onclick="exportHTML()">Enregistrer (télécharger)</button>
+      <button onclick="window.print()">Imprimer / PDF</button>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="hint">Glissez une carte (poignée ⋮⋮) d'un mois à l'autre • cliquez un texte pour l'éditer • réordonnez les sprints par glisser</span>
+  </div>
+
+  <div class="railhead">
+    <h3>Sprints — 3 semaines</h3>
+    <button class="minibtn" onclick="addSprint()" style="font-size:12px;padding:5px 10px;">+ Ajouter un sprint</button>
+  </div>
+  <div class="sprintrail" id="sprintrail"><div class="sprint" data-id="s1">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('s1')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Gamaret</span></div>
+    <div class="sdate" contenteditable="true">6 → 24 juil. (en cours)</div></div><div class="sprint" data-id="s2">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('s2')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Syrah</span></div>
+    <div class="sdate" contenteditable="true">27 juil. → 14 août</div></div><div class="sprint" data-id="sz7hn2">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('sz7hn2')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Sylvaner</span></div>
+    <div class="sdate" contenteditable="true">17 aout -&gt; 4 sept.&nbsp;</div></div><div class="sprint" data-id="s3">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('s3')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Cornalin</span></div>
+    <div class="sdate" contenteditable="true">7 → 25 sept.</div></div><div class="sprint" data-id="s4">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('s4')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Pinot Gris</span></div>
+    <div class="sdate" contenteditable="true">28 sept. → 16 oct.</div></div><div class="sprint" data-id="s5">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('s5')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Viognier</span></div>
+    <div class="sdate" contenteditable="true">19 oct. → 6 nov.</div></div><div class="sprint" data-id="sxpqxl">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('sxpqxl')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Malbec</span></div>
+    <div class="sdate" contenteditable="true">9 nov. -&gt; 27 nov.</div></div><div class="sprint" data-id="s1b94r">
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('s1b94r')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">Garanoir</span></div>
+    <div class="sdate" contenteditable="true">30 nov. -&gt; 18 déc.</div></div></div>
+
+  <div class="boardwrap">
+    <button class="navbtn left" id="navL" onclick="scrollBoard(-1)" aria-label="Défiler à gauche">‹</button>
+    <div class="board" id="board"><div class="col"><h2>Juillet</h2><div class="drop" data-col="0"><div class="card t-desk" data-id="r6f5mhn">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r6f5mhn')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.2.0</span>
+      <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r6f5mhn')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date">Juillet</div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Sélection des documents à envoyer en validation externe</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',0)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Import des doc dispo dans le desk dans la messagerie</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',1)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="2">Option ‘se connecter en tant que’</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',2)">×</span></div></div>
+    <button class="collapse" onclick="toggleCollapse('r6f5mhn')">▸ Voir les 10 autres</button>
+    <button class="addfeat" onclick="addFeat('r6f5mhn')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('r6f5mhn',this.value)"><option value="0" selected="">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
+    </div></div></div></div><div class="col"><h2>Août</h2><div class="drop" data-col="1"><div class="card t-desk" data-id="ri4jidq">
+    <button class="del" title="Supprimer la release" onclick="delRelease('ri4jidq')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.2.1</span>
+      <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('ri4jidq')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date">Aout 2026</div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Modification des données personnelles via drawer</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',0)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Rappels sur les messages</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',1)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="2">Recalcul du taux d'effort lors du changement de loyer d'un bien dans l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',2)">×</span></div></div>
+    <button class="collapse" onclick="toggleCollapse('ri4jidq')">▸ Voir les 1 autres</button>
+    <button class="addfeat" onclick="addFeat('ri4jidq')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('ri4jidq',this.value)"><option value="0">Juillet</option><option value="1" selected="">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
+    </div></div></div></div><div class="col"><h2>Septembre</h2><div class="drop" data-col="2"><div class="card t-desk" data-id="r2">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r2')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.2.2</span>
+      <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r2')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date">Septembre 2026</div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Gestion des signatures automatiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',0)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Mettre en lecture seule les biens retirés de l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',1)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r2')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('r2',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2" selected="">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
+    </div></div></div></div><div class="col"><h2>Octobre</h2><div class="drop" data-col="3"><div class="card t-desk" data-id="r3">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r3')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.2.3</span>
+      <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r3')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date">Octobre 2026</div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Import IA des postulations</span><span class="rmf" title="Supprimer" onclick="rmFeat('r3',0)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r3',1)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r3')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('r3',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3" selected="">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
+    </div></div><div class="card t-portail" data-id="r4hhqck">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r4hhqck')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">PORTAIL</span>
+      <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('r4hhqck')">Portail</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Refonte dashboard (page objet/détail stat/tableau de bord)</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4hhqck',0)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r4hhqck')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('r4hhqck',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3" selected="">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
+    </div></div></div></div><div class="col"><h2>Novembre</h2><div class="drop" data-col="4"><div class="card t-desk" data-id="r4">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r4')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.3.0</span>
+      <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r4')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date">Novembre 2026</div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Demande de contact</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4',0)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4',1)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r4')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('r4',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4" selected="">Novembre</option><option value="5">Décembre</option></select>
+    </div></div><div class="card t-portail" data-id="rutyp5k">
+    <button class="del" title="Supprimer la release" onclick="delRelease('rutyp5k')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">PORTAIL</span>
+      <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('rutyp5k')">Portail</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Statistiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',0)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Dashboard - BI<br></span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',1)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('rutyp5k')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('rutyp5k',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4" selected="">Novembre</option><option value="5">Décembre</option></select>
+    </div></div></div></div><div class="col"><h2>Décembre</h2><div class="drop" data-col="5"><div class="card t-desk" data-id="r5">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r5')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.3.1</span>
+      <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r5')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date">Décembre 2026</div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r5',0)">×</span></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r5',1)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r5')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('r5',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5" selected="">Décembre</option></select>
+    </div></div><div class="card t-portail" data-id="r20032n">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r20032n')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">PORTAIL</span>
+      <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('r20032n')">Portail</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="feats">
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r20032n',0)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r20032n')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('r20032n',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5" selected="">Décembre</option></select>
+    </div></div></div></div></div>
+    <button class="navbtn right hidden" id="navR" onclick="scrollBoard(1)" aria-label="Défiler à droite">›</button>
+  </div>
+
+  <footer>Modifiable en direct dans le navigateur. Pensez à « Enregistrer (télécharger) » pour conserver vos changements.</footer>
+</div>
+
+<script type="application/json" id="seed">{
+  "meta": {
+    "title": "",
+    "subtitle": ""
+  },
+  "sprints": [
+    {
+      "id": "s1",
+      "name": "Gamaret",
+      "dates": "6 → 24 juil. (en cours)",
+      "month": 0
+    },
+    {
+      "id": "s2",
+      "name": "Syrah",
+      "dates": "27 juil. → 14 août",
+      "month": 1
+    },
+    {
+      "id": "sz7hn2",
+      "name": "Sylvaner",
+      "dates": "17 aout -> 4 sept. ",
+      "month": 1
+    },
+    {
+      "id": "s3",
+      "name": "Cornalin",
+      "dates": "7 → 25 sept.",
+      "month": 2
+    },
+    {
+      "id": "s4",
+      "name": "Pinot Gris",
+      "dates": "28 sept. → 16 oct.",
+      "month": 3
+    },
+    {
+      "id": "s5",
+      "name": "Viognier",
+      "dates": "19 oct. → 6 nov.",
+      "month": 4
+    },
+    {
+      "id": "sxpqxl",
+      "name": "Malbec",
+      "dates": "9 nov. -> 27 nov.",
+      "month": 5
+    },
+    {
+      "id": "s1b94r",
+      "name": "Garanoir",
+      "dates": "30 nov. -> 18 déc."
+    }
+  ],
+  "releases": [
+    {
+      "id": "r2",
+      "title": "Desk v1.2.2",
+      "month": 2,
+      "date": "Septembre 2026",
+      "status": "avenir",
+      "feats": [
+        "Gestion des signatures automatiques",
+        "Mettre en lecture seule les biens retirés de l'IDX"
+      ]
+    },
+    {
+      "id": "r3",
+      "title": "Desk v1.2.3",
+      "month": 3,
+      "date": "Octobre 2026",
+      "status": "avenir",
+      "feats": [
+        "Import IA des postulations",
+        "À compléter"
+      ]
+    },
+    {
+      "id": "r4",
+      "title": "Desk v1.3.0",
+      "month": 4,
+      "date": "Novembre 2026",
+      "status": "avenir",
+      "feats": [
+        "Demande de contact",
+        "À compléter"
+      ]
+    },
+    {
+      "id": "r5",
+      "title": "Desk v1.3.1",
+      "month": 5,
+      "date": "Décembre 2026",
+      "status": "avenir",
+      "feats": [
+        "Clients Privés",
+        "À compléter"
+      ]
+    },
+    {
+      "id": "r6f5mhn",
+      "title": "Desk v1.2.0",
+      "month": 0,
+      "date": "Juillet",
+      "status": "avenir",
+      "feats": [
+        "Sélection des documents à envoyer en validation externe",
+        "Import des doc dispo dans le desk dans la messagerie",
+        "Option ‘se connecter en tant que’",
+        "Saisie manuelle d’un signataire pour les beaux",
+        "State machine",
+        "Visualisation des doc dans la messagerie pour remplacement",
+        "Prise en compte des charges fixes dans le taux d’effort",
+        "Gestion des annexes spécifiques au candidat (RP)",
+        "Affichage des informations d’adresse pour les sociétés qui postulent",
+        "Bloquer l’utilisation de la messagerie si aucun email n’est dispo dans la postulation importée manuellement",
+        "Si LPD activée : bloquer envoie en validation interne/externe des postulations non shortlistées",
+        "Récupération des 2 PDF de postulations : LPD compliant et avec tous les doc",
+        "Optimisation parser IDX"
+      ]
+    },
+    {
+      "id": "ri4jidq",
+      "title": "Desk v1.2.1",
+      "month": 1,
+      "date": "Aout 2026",
+      "status": "avenir",
+      "feats": [
+        "Modification des données personnelles via drawer",
+        "Rappels sur les messages",
+        "Recalcul du taux d'effort lors du changement de loyer d'un bien dans l'IDX",
+        "Ajouter la liste des statuts de postulation dans la page de détail d'un bien"
+      ]
+    },
+    {
+      "id": "rutyp5k",
+      "title": "PORTAIL",
+      "month": 4,
+      "date": "",
+      "status": "avenir",
+      "feats": [
+        "Statistiques",
+        "Dashboard - BI"
+      ],
+      "type": "portail",
+      "collapsed": false
+    },
+    {
+      "id": "r20032n",
+      "title": "PORTAIL",
+      "month": 5,
+      "date": "",
+      "status": "avenir",
+      "feats": [
+        "Clients Privés"
+      ],
+      "type": "portail"
+    },
+    {
+      "id": "r4hhqck",
+      "title": "PORTAIL",
+      "month": 3,
+      "date": "",
+      "status": "avenir",
+      "feats": [
+        "Refonte dashboard (page objet/détail stat/tableau de bord)"
+      ],
+      "type": "portail"
+    }
+  ]
+}</script>
+
+<script>
+const MONTHS = ["Juillet 2026","Août 2026","Septembre 2026","Octobre 2026","Novembre 2026","Décembre 2026"];
+
+let dragKind = null;
+let state = load();
+render();
+document.getElementById('board').addEventListener('scroll', updateArrows);
+window.addEventListener('resize', updateArrows);
+
+function load(){
+  try{
+    const ls = null; // exported snapshot
+    if(ls) return normalize(JSON.parse(ls));
+  }catch(e){}
+  return normalize(JSON.parse(document.getElementById("seed").textContent));
+}
+function normalize(st){
+  st.sprints = st.sprints || [];
+  return st;
+}
+function save(){
+  try{ localStorage.setItem("roadmapDeskH2_v2", JSON.stringify(state)); }catch(e){}
+}
+function uid(){ return "r"+Math.random().toString(36).slice(2,8); }
+function get(id){ return state.releases.find(x=>x.id===id); }
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function render(){
+  if(state.meta){
+    if(state.meta.title) document.querySelector('[data-meta=title]').innerHTML = state.meta.title;
+    if(state.meta.subtitle) document.querySelector('[data-meta=subtitle]').textContent = state.meta.subtitle;
+  }
+  renderSprints();
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  MONTHS.forEach((m,i)=>{
+    const col = document.createElement("div");
+    col.className = "col";
+    col.innerHTML = `<h2>${m.replace(" 2026","")}</h2>`;
+    const drop = document.createElement("div");
+    drop.className = "drop"; drop.dataset.col = i;
+    bindDrop(drop, col);
+    col.appendChild(drop);
+    board.appendChild(col);
+  });
+  state.releases.forEach(r=>{
+    const drop = board.querySelector(`.drop[data-col="${Math.max(0,Math.min(5,r.month))}"]`);
+    if(drop) drop.appendChild(cardEl(r));
+  });
+  updateArrows();
+}
+
+function scrollBoard(dir){
+  const b = document.getElementById('board');
+  const col = b.querySelector('.col');
+  const step = (col ? col.offsetWidth : 240) + 14;
+  b.scrollBy({left: dir*step, behavior:'smooth'});
+}
+function updateArrows(){
+  const b = document.getElementById('board');
+  const L = document.getElementById('navL'), R = document.getElementById('navR');
+  if(!b || !L || !R) return;
+  const max = b.scrollWidth - b.clientWidth - 1;
+  L.classList.toggle('hidden', b.scrollLeft <= 0);
+  R.classList.toggle('hidden', b.scrollLeft >= max || max <= 0);
+}
+
+function renderSprints(){
+  if(!state.sprints) state.sprints = [];
+  const rail = document.getElementById("sprintrail");
+  rail.innerHTML = "";
+  state.sprints.forEach(s=> rail.appendChild(sprintEl(s)));
+  if(!rail._bound){ bindSprintRail(rail); rail._bound = true; }
+}
+function sprintEl(s){
+  const el = document.createElement("div");
+  el.className = "sprint"; el.dataset.id = s.id;
+  el.innerHTML = `
+    <button class="sdel" title="Supprimer le sprint" onclick="delSprint('${s.id}')">×</button>
+    <div class="shead"><span class="sgrip" title="Glisser pour réordonner">⋮⋮</span><span class="sname" contenteditable="true">${esc(s.name)}</span></div>
+    <div class="sdate" contenteditable="true">${esc(s.dates)}</div>`;
+  el.querySelector('.sname').addEventListener('input',e=>{ getSprint(s.id).name = e.target.textContent; save(); });
+  el.querySelector('.sdate').addEventListener('input',e=>{ getSprint(s.id).dates = e.target.textContent; save(); });
+  const grip = el.querySelector('.sgrip');
+  grip.addEventListener('mousedown',()=>{ el.setAttribute('draggable','true'); });
+  el.addEventListener('dragstart',e=>{ dragKind="spr"; e.dataTransfer.setData('text/plain','spr:'+s.id); e.dataTransfer.effectAllowed='move'; requestAnimationFrame(()=>el.classList.add('dragging')); });
+  el.addEventListener('dragend',()=>{
+    el.classList.remove('dragging'); el.removeAttribute('draggable');
+    if(dragKind==="spr"){ commitSprintOrder(); render(); }
+    dragKind=null;
+  });
+  return el;
+}
+function bindSprintRail(rail){
+  rail.addEventListener('dragover',e=>{
+    if(dragKind!=="spr") return;
+    e.preventDefault(); e.dataTransfer.dropEffect='move';
+    const dragging = rail.querySelector('.sprint.dragging'); if(!dragging) return;
+    const after = dragAfterX(rail, e.clientX);
+    if(after==null) rail.appendChild(dragging);
+    else rail.insertBefore(dragging, after);
+  });
+  rail.addEventListener('drop',e=>{ if(dragKind==="spr") e.preventDefault(); });
+}
+function dragAfterX(rail, x){
+  const els = [...rail.querySelectorAll('.sprint:not(.dragging)')];
+  let best = {off:-Infinity, el:null};
+  els.forEach(el=>{
+    const b = el.getBoundingClientRect();
+    const off = x - (b.left + b.width/2);
+    if(off < 0 && off > best.off) best = {off, el};
+  });
+  return best.el;
+}
+function commitSprintOrder(){
+  const ids = [...document.getElementById('sprintrail').querySelectorAll('.sprint')].map(el=>el.dataset.id);
+  state.sprints.sort((a,b)=> ids.indexOf(a.id) - ids.indexOf(b.id));
+  save();
+}
+function getSprint(id){ return state.sprints.find(x=>x.id===id); }
+function addSprint(){ state.sprints=state.sprints||[]; state.sprints.push({id:"s"+Math.random().toString(36).slice(2,7),name:"",dates:""}); save(); render(); }
+function delSprint(id){ state.sprints = state.sprints.filter(x=>x.id!==id); save(); render(); }
+
+function cardEl(r){
+  const c = document.createElement("div");
+  const type = (r.type==="portail") ? "portail" : "desk";
+  c.className = "card t-"+type;
+  c.dataset.id = r.id;
+
+  const monthOpts = MONTHS.map((m,i)=>`<option value="${i}" ${i===r.month?"selected":""}>${m.replace(" 2026","")}</option>`).join("");
+
+  const collapsible = r.feats.length > 3;
+  const collapsed = collapsible && (r.collapsed !== false);
+  const shown = collapsed ? r.feats.slice(0,3) : r.feats;
+  const feats = shown.map((f,idx)=>`
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="${idx}">${esc(f)}</span><span class="rmf" title="Supprimer" onclick="rmFeat('${r.id}',${idx})">×</span></div>`).join("");
+  const collapseBtn = collapsible
+    ? `<button class="collapse" onclick="toggleCollapse('${r.id}')">${collapsed ? "▸ Voir les "+(r.feats.length-3)+" autres" : "▾ Réduire"}</button>`
+    : "";
+
+  c.innerHTML = `
+    <button class="del" title="Supprimer la release" onclick="delRelease('${r.id}')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">${esc(r.title)}</span>
+      <span class="rtype t-${type}" title="Basculer Desk / Portail" onclick="toggleType('${r.id}')">${type==="portail"?"Portail":"Desk"}</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date">${esc(r.date)}</div>
+    <div class="feats">${feats}</div>
+    ${collapseBtn}
+    <button class="addfeat" onclick="addFeat('${r.id}')">+ ajouter une fonctionnalité</button>
+    <div class="row2">
+      <label>Mois</label>
+      <select onchange="moveRelease('${r.id}',this.value)">${monthOpts}</select>
+    </div>`;
+
+  // inline edits (no re-render, keeps focus)
+  c.querySelector('[data-f=title]').addEventListener('input',e=>{ get(r.id).title = e.target.textContent; save(); });
+  c.querySelector('[data-f=date]').addEventListener('input',e=>{ get(r.id).date = e.target.textContent; save(); });
+  c.querySelectorAll('.ftxt').forEach(el=>{
+    el.addEventListener('input',()=>{ get(r.id).feats[+el.dataset.fi] = el.textContent; save(); });
+  });
+
+  // drag & drop — only from the grip handle so text stays editable
+  const grip = c.querySelector('.grip');
+  grip.addEventListener('mousedown',()=>{ c.setAttribute('draggable','true'); });
+  c.addEventListener('dragstart',e=>{ dragKind="rel"; e.dataTransfer.setData('text/plain','rel:'+r.id); e.dataTransfer.effectAllowed='move'; c.classList.add('dragging'); });
+  c.addEventListener('dragend',()=>{ dragKind=null; c.classList.remove('dragging'); c.removeAttribute('draggable'); });
+  return c;
+}
+
+function bindDrop(drop, col){
+  drop.addEventListener('dragover',e=>{ if(dragKind!=="rel") return; e.preventDefault(); e.dataTransfer.dropEffect='move'; col.classList.add('over'); });
+  drop.addEventListener('dragleave',e=>{ if(!drop.contains(e.relatedTarget)) col.classList.remove('over'); });
+  drop.addEventListener('drop',e=>{
+    if(dragKind!=="rel") return;
+    e.preventDefault(); col.classList.remove('over');
+    const id = String(e.dataTransfer.getData('text/plain')||'').replace('rel:','');
+    if(get(id)){ get(id).month = +drop.dataset.col; save(); render(); }
+  });
+}
+
+function moveRelease(id,val){ get(id).month = +val; save(); render(); }
+function toggleType(id){ const r=get(id); r.type=(r.type==="portail")?"desk":"portail"; save(); render(); }
+function toggleCollapse(id){ const r=get(id); r.collapsed=(r.collapsed===false); save(); render(); }
+function addFeat(id){ const r=get(id); r.feats.push(""); r.collapsed=false; save(); render();
+  // focus the new feature block
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  if(card){ const els = card.querySelectorAll('.ftxt'); const last = els[els.length-1]; if(last) last.focus(); }
+}
+function rmFeat(id,idx){ get(id).feats.splice(idx,1); save(); render(); }
+function delRelease(id){
+  if(!confirm("Supprimer cette release ?")) return;
+  state.releases = state.releases.filter(x=>x.id!==id); save(); render();
+}
+function addRelease(){
+  state.releases.push({id:uid(),title:"Nouvelle release",month:0,date:"",type:"desk",feats:[""]});
+  save(); render();
+}
+
+// header meta persistence
+document.querySelector('[data-meta=title]').addEventListener('input',e=>{ state.meta=state.meta||{}; state.meta.title=e.target.innerHTML; save(); });
+document.querySelector('[data-meta=subtitle]').addEventListener('input',e=>{ state.meta=state.meta||{}; state.meta.subtitle=e.target.textContent; save(); });
+
+function exportHTML(){
+  const clone = document.documentElement.cloneNode(true);
+  clone.querySelector('#seed').textContent = JSON.stringify(state,null,2);
+  const html = "<!DOCTYPE html>\n" + clone.outerHTML.replace(
+    'const ls = localStorage.getItem("roadmapDeskH2_v2");',
+    'const ls = null; // exported snapshot'
+  );
+  const blob = new Blob([html],{type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "roadmap_desk_S2-2026.html";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+</script>
+
+
+</body></html>
