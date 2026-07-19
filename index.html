@@ -85,6 +85,17 @@
   .feat .rmf{opacity:0;color:var(--muted);cursor:pointer;font-weight:700;padding:0 2px;flex:none;font-size:14px;}
   .feat:hover .rmf{opacity:1;}
   .feat .rmf:hover{color:#c0392b;}
+  .feats{min-height:14px;}
+  .feat .fgrip{cursor:grab;color:#c4ccd8;font-size:12px;line-height:1.35;user-select:none;flex:none;letter-spacing:-2px;padding:0 1px;}
+  .feat .fgrip:active{cursor:grabbing;}
+  .feat.dragging{opacity:.45;}
+  .card.feat-over{outline:2px dashed var(--accent);outline-offset:1px;}
+  .card.feat-over .feats{background:var(--encours-bg);border-radius:8px;}
+
+  .dates2{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);}
+  .dates2 label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600;}
+  .dates2 input[type=date]{font:inherit;font-size:11px;border:1px solid var(--line);border-radius:7px;padding:3px 5px;color:var(--ink);background:#fff;}
+  .dates2 .dval{display:none;font-size:11.5px;color:var(--ink);font-weight:600;}
 
   .addfeat{align-self:flex-start;font-size:12px;color:var(--accent);background:none;border:none;
     padding:2px 0;font-weight:600;}
@@ -117,7 +128,9 @@
 
   footer{margin-top:10px;font-size:12px;color:var(--muted);text-align:center;flex:none;}
   @media print{
-    .actions,.hint,.addfeat,.del,.rmf,.grip,.sgrip,.row2,.sdel,.navbtn{display:none!important;}
+    .actions,.hint,.addfeat,.del,.rmf,.grip,.fgrip,.sgrip,.row2,.sdel,.navbtn{display:none!important;}
+    .dates2 input[type=date]{display:none!important;}
+    .dates2 .dval{display:inline!important;}
     body{background:#fff;}
     .wrap{height:auto;display:block;}
     .boardwrap{display:block;}
@@ -142,7 +155,7 @@
   </header>
 
   <div class="legend">
-    <span class="hint">Glissez une carte (poignée ⋮⋮) d'un mois à l'autre • cliquez un texte pour l'éditer • réordonnez les sprints par glisser</span>
+    <span class="hint">Glissez une carte (poignée ⋮⋮) d'un mois à l'autre • glissez une fonctionnalité (poignée ⋮⋮) vers une autre release • renseignez les dates MES / MEP • cliquez un texte pour l'éditer</span>
   </div>
 
   <div class="railhead">
@@ -176,7 +189,7 @@
     <div class="sdate" contenteditable="true">30 nov. -&gt; 18 déc.</div></div></div>
 
   <div class="boardwrap">
-    <button class="navbtn left" id="navL" onclick="scrollBoard(-1)" aria-label="Défiler à gauche">‹</button>
+    <button class="navbtn left hidden" id="navL" onclick="scrollBoard(-1)" aria-label="Défiler à gauche">‹</button>
     <div class="board" id="board"><div class="col"><h2>Juillet</h2><div class="drop" data-col="0"><div class="card t-desk" data-id="r6f5mhn">
     <button class="del" title="Supprimer la release" onclick="delRelease('r6f5mhn')">×</button>
     <div class="chead">
@@ -283,8 +296,7 @@
     </div>
     <div class="rel-date" contenteditable="true" data-f="date"></div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Statistiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',0)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Dashboard - BI<br></span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',1)">×</span></div></div>
+    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Statistiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',0)">×</span></div></div>
     
     <button class="addfeat" onclick="addFeat('rutyp5k')">+ ajouter une fonctionnalité</button>
     <div class="row2">
@@ -322,7 +334,7 @@
       <label>Mois</label>
       <select onchange="moveRelease('r20032n',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5" selected="">Décembre</option></select>
     </div></div></div></div></div>
-    <button class="navbtn right hidden" id="navR" onclick="scrollBoard(1)" aria-label="Défiler à droite">›</button>
+    <button class="navbtn right" id="navR" onclick="scrollBoard(1)" aria-label="Défiler à droite">›</button>
   </div>
 
   <footer>Modifiable en direct dans le navigateur. Pensez à « Enregistrer (télécharger) » pour conserver vos changements.</footer>
@@ -469,11 +481,9 @@
       "date": "",
       "status": "avenir",
       "feats": [
-        "Statistiques",
-        "Dashboard - BI"
+        "Statistiques"
       ],
-      "type": "portail",
-      "collapsed": false
+      "type": "portail"
     },
     {
       "id": "r20032n",
@@ -502,6 +512,8 @@
 
 <script>
 const MONTHS = ["Juillet 2026","Août 2026","Septembre 2026","Octobre 2026","Novembre 2026","Décembre 2026"];
+const MOIS_AB = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+function fmtDate(v){ if(!v) return "—"; const p=String(v).split('-'); if(p.length!==3) return v; return (+p[2])+' '+MOIS_AB[(+p[1])-1]+' '+p[0]; }
 
 let dragKind = null;
 let state = load();
@@ -635,7 +647,7 @@ function cardEl(r){
   const collapsed = collapsible && (r.collapsed !== false);
   const shown = collapsed ? r.feats.slice(0,3) : r.feats;
   const feats = shown.map((f,idx)=>`
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="${idx}">${esc(f)}</span><span class="rmf" title="Supprimer" onclick="rmFeat('${r.id}',${idx})">×</span></div>`).join("");
+    <div class="feat" data-fi="${idx}"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="${idx}">${esc(f)}</span><span class="rmf" title="Supprimer" onclick="rmFeat('${r.id}',${idx})">×</span></div>`).join("");
   const collapseBtn = collapsible
     ? `<button class="collapse" onclick="toggleCollapse('${r.id}')">${collapsed ? "▸ Voir les "+(r.feats.length-3)+" autres" : "▾ Réduire"}</button>`
     : "";
@@ -648,19 +660,50 @@ function cardEl(r){
       <span class="rtype t-${type}" title="Basculer Desk / Portail" onclick="toggleType('${r.id}')">${type==="portail"?"Portail":"Desk"}</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">${esc(r.date)}</div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value="${r.mes||''}"><span class="dval d-mes-v">${fmtDate(r.mes)}</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="${r.mep||''}"><span class="dval d-mep-v">${fmtDate(r.mep)}</span></label>
+    </div>
     <div class="feats">${feats}</div>
     ${collapseBtn}
-    <button class="addfeat" onclick="addFeat('${r.id}')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('${r.id}',this.value)">${monthOpts}</select>
-    </div>`;
+    <button class="addfeat" onclick="addFeat('${r.id}')">+ ajouter une fonctionnalité</button>`;
 
   // inline edits (no re-render, keeps focus)
   c.querySelector('[data-f=title]').addEventListener('input',e=>{ get(r.id).title = e.target.textContent; save(); });
   c.querySelector('[data-f=date]').addEventListener('input',e=>{ get(r.id).date = e.target.textContent; save(); });
   c.querySelectorAll('.ftxt').forEach(el=>{
     el.addEventListener('input',()=>{ get(r.id).feats[+el.dataset.fi] = el.textContent; save(); });
+  });
+
+  // MES / MEP dates
+  c.querySelector('.d-mes').addEventListener('change',e=>{ get(r.id).mes = e.target.value; c.querySelector('.d-mes-v').textContent = fmtDate(e.target.value); save(); });
+  c.querySelector('.d-mep').addEventListener('change',e=>{ get(r.id).mep = e.target.value; c.querySelector('.d-mep-v').textContent = fmtDate(e.target.value); save(); });
+
+  // drag & drop of individual features between releases (from the feature grip)
+  c.querySelectorAll('.feat').forEach(fe=>{
+    const fg = fe.querySelector('.fgrip');
+    fg.addEventListener('mousedown',()=>{ fe.setAttribute('draggable','true'); });
+    fe.addEventListener('dragstart',e=>{
+      dragKind="feat"; e.stopPropagation();
+      e.dataTransfer.setData('text/plain','feat:'+r.id+':'+fe.dataset.fi);
+      e.dataTransfer.effectAllowed='move';
+      requestAnimationFrame(()=>fe.classList.add('dragging'));
+    });
+    fe.addEventListener('dragend',()=>{ fe.classList.remove('dragging'); fe.removeAttribute('draggable'); dragKind=null; });
+  });
+  c.addEventListener('dragover',e=>{ if(dragKind!=="feat") return; e.preventDefault(); e.dataTransfer.dropEffect='move'; c.classList.add('feat-over'); });
+  c.addEventListener('dragleave',e=>{ if(!c.contains(e.relatedTarget)) c.classList.remove('feat-over'); });
+  c.addEventListener('drop',e=>{
+    if(dragKind!=="feat") return;
+    e.preventDefault(); e.stopPropagation(); c.classList.remove('feat-over');
+    const m = String(e.dataTransfer.getData('text/plain')||'').match(/^feat:(.+):(\d+)$/);
+    if(!m) return;
+    const src = get(m[1]); const srcIdx = +m[2];
+    if(!src || m[1]===r.id) return;
+    const moved = src.feats.splice(srcIdx,1)[0];
+    if(moved===undefined) return;
+    get(r.id).feats.push(moved);
+    save(); render();
   });
 
   // drag & drop — only from the grip handle so text stays editable
