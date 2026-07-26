@@ -127,6 +127,54 @@
   .sprint .sdel:hover{color:#c0392b;opacity:1;background:none;}
 
   footer{margin-top:10px;font-size:12px;color:var(--muted);text-align:center;flex:none;}
+  /* ===== Mode lecture seule (viewers sans token) ===== */
+  body.readonly .editonly{display:none!important;}
+  body:not(.readonly) .roonly{display:none!important;}
+  body.readonly .hint,
+  body.readonly .addfeat,
+  body.readonly .del,
+  body.readonly .rmf,
+  body.readonly .grip,
+  body.readonly .fgrip,
+  body.readonly .sgrip,
+  body.readonly .sdel,
+  body.readonly .row2,
+  body.readonly .railhead > button{display:none!important;}
+  body.readonly .dates2 input[type=date]{display:none!important;}
+  body.readonly .dates2 .dval{display:inline!important;}
+  body.readonly .rtype{cursor:default;pointer-events:none;}
+  body.readonly [contenteditable]{cursor:default;}
+
+  /* ===== Badge mode ===== */
+  #modeBadge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;align-self:center;}
+  body.readonly #modeBadge{background:var(--avenir-bg);color:var(--avenir);}
+  body:not(.readonly) #modeBadge{background:var(--livre-bg);color:#1c7a41;}
+
+  /* ===== Toast de statut ===== */
+  #ghStatus{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;
+    max-width:80vw;padding:11px 18px;border-radius:10px;font-size:13.5px;font-weight:600;
+    box-shadow:0 6px 22px rgba(20,30,50,.22);display:none;}
+  #ghStatus.show{display:block;}
+  #ghStatus.busy{background:#eef2f7;color:#42506a;border:1px solid #d7deea;}
+  #ghStatus.ok{background:var(--livre-bg);color:#1c7a41;border:1px solid #b9e3c8;}
+  #ghStatus.err{background:var(--risque-bg);color:#a85c14;border:1px solid #f0cfa0;}
+
+  /* ===== Modale token ===== */
+  #tokOverlay{position:fixed;inset:0;background:rgba(20,28,44,.5);z-index:60;
+    display:none;align-items:center;justify-content:center;padding:20px;}
+  #tokOverlay.show{display:flex;}
+  #tokBox{background:#fff;border-radius:14px;max-width:460px;width:100%;padding:22px 24px;
+    box-shadow:0 20px 60px rgba(20,30,50,.35);}
+  #tokBox h3{margin:0 0 8px;font-size:17px;}
+  #tokBox p{margin:0 0 14px;font-size:13px;color:var(--muted);line-height:1.55;}
+  #tokBox p a{color:var(--accent);font-weight:600;}
+  #tokBox code{background:var(--bg);padding:1px 5px;border-radius:5px;font-size:12px;}
+  #tokBox input{width:100%;font:inherit;font-size:13px;border:1px solid var(--line);
+    border-radius:9px;padding:10px 12px;margin-bottom:14px;}
+  #tokBox .trow{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  #tokForget{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;
+    text-decoration:underline;padding:0;}
+
   @media print{
     .actions,.hint,.addfeat,.del,.rmf,.grip,.fgrip,.sgrip,.row2,.sdel,.navbtn{display:none!important;}
     .dates2 input[type=date]{display:none!important;}
@@ -148,8 +196,12 @@
       <p class="subtitle" contenteditable="true" data-meta="subtitle">Vision grosse maille des prochaines releases et de leurs grandes fonctionnalités. Cliquez sur n'importe quel texte pour l'éditer.</p>
     </div>
     <div class="actions">
-      <button class="primary" onclick="addRelease()">+ Ajouter une release</button>
-      <button onclick="exportHTML()">Enregistrer (télécharger)</button>
+      <span id="modeBadge">Lecture seule</span>
+      <button class="primary editonly" onclick="publishToGitHub()">💾 Publier en ligne</button>
+      <button class="editonly" onclick="addRelease()">+ Ajouter une release</button>
+      <button class="editonly" onclick="previewReadonly()">👁 Aperçu lecteur</button>
+      <button class="editonly" onclick="exportHTML()">Télécharger (sauvegarde)</button>
+      <button class="roonly primary" onclick="openTokenModal()">🔑 Mode édition</button>
       <button onclick="window.print()">Imprimer / PDF</button>
     </div>
   </header>
@@ -198,16 +250,16 @@
       <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r6f5mhn')">Desk</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">Juillet</div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value="2026-06-24"><span class="dval d-mes-v">24 juin 2026</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-07-15"><span class="dval d-mep-v">15 juil. 2026</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Sélection des documents à envoyer en validation externe</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',0)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Import des doc dispo dans le desk dans la messagerie</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',1)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="2">Option ‘se connecter en tant que’</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',2)">×</span></div></div>
-    <button class="collapse" onclick="toggleCollapse('r6f5mhn')">▸ Voir les 10 autres</button>
-    <button class="addfeat" onclick="addFeat('r6f5mhn')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('r6f5mhn',this.value)"><option value="0" selected="">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
-    </div></div></div></div><div class="col"><h2>Août</h2><div class="drop" data-col="1"><div class="card t-desk" data-id="ri4jidq">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Import des doc dispo dans le desk dans la messagerie</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Option ‘se connecter en tant que’</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',1)">×</span></div>
+    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Saisie manuelle d’un signataire pour les beaux</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',2)">×</span></div></div>
+    <button class="collapse" onclick="toggleCollapse('r6f5mhn')">▸ Voir les 9 autres</button>
+    <button class="addfeat" onclick="addFeat('r6f5mhn')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Août</h2><div class="drop" data-col="1"><div class="card t-desk" data-id="ri4jidq">
     <button class="del" title="Supprimer la release" onclick="delRelease('ri4jidq')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -215,16 +267,19 @@
       <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('ri4jidq')">Desk</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">Aout 2026</div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value="2026-07-23"><span class="dval d-mes-v">23 juil. 2026</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-08-06"><span class="dval d-mep-v">6 août 2026</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Modification des données personnelles via drawer</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',0)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Rappels sur les messages</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',1)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="2">Recalcul du taux d'effort lors du changement de loyer d'un bien dans l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',2)">×</span></div></div>
-    <button class="collapse" onclick="toggleCollapse('ri4jidq')">▸ Voir les 1 autres</button>
-    <button class="addfeat" onclick="addFeat('ri4jidq')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('ri4jidq',this.value)"><option value="0">Juillet</option><option value="1" selected="">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
-    </div></div></div></div><div class="col"><h2>Septembre</h2><div class="drop" data-col="2"><div class="card t-desk" data-id="r2">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Modification des données personnelles via drawer</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Rappels sur les messages</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',1)">×</span></div>
+    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Recalcul du taux d'effort lors du changement de loyer d'un bien dans l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',2)">×</span></div>
+    <div class="feat" data-fi="3"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="3">Ajouter la liste des statuts de postulation dans la page de détail d'un bien</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',3)">×</span></div>
+    <div class="feat" data-fi="4"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="4">Gestion des mails en erreur :&nbsp;Dans les cas où un candidat répondant depuis sa BAL supprime la référence de la postulation (dans l’objet et dans le corps du mail), lui renvoyer un email d’erreur pour lui dire que le message n’a pas été traité.&nbsp;</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',4)">×</span></div>
+    <div class="feat" data-fi="5"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="5">Liste des statuts de postulation dans la page de détail d'un bien</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',5)">×</span></div></div>
+    <button class="collapse" onclick="toggleCollapse('ri4jidq')">▾ Réduire</button>
+    <button class="addfeat" onclick="addFeat('ri4jidq')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Septembre</h2><div class="drop" data-col="2"><div class="card t-desk" data-id="r2">
     <button class="del" title="Supprimer la release" onclick="delRelease('r2')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -232,15 +287,17 @@
       <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r2')">Desk</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">Septembre 2026</div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value="2026-08-11"><span class="dval d-mes-v">11 août 2026</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-08-24"><span class="dval d-mep-v">24 août 2026</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Gestion des signatures automatiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',0)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">Mettre en lecture seule les biens retirés de l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',1)">×</span></div></div>
-    
-    <button class="addfeat" onclick="addFeat('r2')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('r2',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2" selected="">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
-    </div></div></div></div><div class="col"><h2>Octobre</h2><div class="drop" data-col="3"><div class="card t-desk" data-id="r3">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Gestion des signatures automatiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Mettre en lecture seule les biens retirés de l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',1)">×</span></div>
+    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Configurer une ApiKey &amp; Username Skribble par AgencyGroup</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',2)">×</span></div>
+    <div class="feat" data-fi="3"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="3">Export mensuel rapport sur les signatures</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',3)">×</span></div></div>
+    <button class="collapse" onclick="toggleCollapse('r2')">▾ Réduire</button>
+    <button class="addfeat" onclick="addFeat('r2')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Octobre</h2><div class="drop" data-col="3"><div class="card t-desk" data-id="r3">
     <button class="del" title="Supprimer la release" onclick="delRelease('r3')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -248,15 +305,15 @@
       <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r3')">Desk</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">Octobre 2026</div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value="2026-08-31"><span class="dval d-mes-v">31 août 2026</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-09-14"><span class="dval d-mep-v">14 sept. 2026</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Import IA des postulations</span><span class="rmf" title="Supprimer" onclick="rmFeat('r3',0)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r3',1)">×</span></div></div>
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Import IA des postulations</span><span class="rmf" title="Supprimer" onclick="rmFeat('r3',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r3',1)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('r3')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('r3',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3" selected="">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
-    </div></div><div class="card t-portail" data-id="r4hhqck">
+    <button class="addfeat" onclick="addFeat('r3')">+ ajouter une fonctionnalité</button></div><div class="card t-portail" data-id="r4hhqck">
     <button class="del" title="Supprimer la release" onclick="delRelease('r4hhqck')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -264,14 +321,14 @@
       <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('r4hhqck')">Portail</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Refonte dashboard (page objet/détail stat/tableau de bord)</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4hhqck',0)">×</span></div></div>
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Refonte dashboard (page objet/détail stat/tableau de bord)</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4hhqck',0)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('r4hhqck')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('r4hhqck',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3" selected="">Octobre</option><option value="4">Novembre</option><option value="5">Décembre</option></select>
-    </div></div></div></div><div class="col"><h2>Novembre</h2><div class="drop" data-col="4"><div class="card t-desk" data-id="r4">
+    <button class="addfeat" onclick="addFeat('r4hhqck')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Novembre</h2><div class="drop" data-col="4"><div class="card t-desk" data-id="r4">
     <button class="del" title="Supprimer la release" onclick="delRelease('r4')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -279,15 +336,15 @@
       <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r4')">Desk</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">Novembre 2026</div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Demande de contact</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4',0)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4',1)">×</span></div></div>
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Demande de contact</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4',1)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('r4')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('r4',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4" selected="">Novembre</option><option value="5">Décembre</option></select>
-    </div></div><div class="card t-portail" data-id="rutyp5k">
+    <button class="addfeat" onclick="addFeat('r4')">+ ajouter une fonctionnalité</button></div><div class="card t-portail" data-id="rutyp5k">
     <button class="del" title="Supprimer la release" onclick="delRelease('rutyp5k')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -295,14 +352,14 @@
       <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('rutyp5k')">Portail</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Statistiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',0)">×</span></div></div>
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Statistiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',0)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('rutyp5k')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('rutyp5k',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4" selected="">Novembre</option><option value="5">Décembre</option></select>
-    </div></div></div></div><div class="col"><h2>Décembre</h2><div class="drop" data-col="5"><div class="card t-desk" data-id="r5">
+    <button class="addfeat" onclick="addFeat('rutyp5k')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Décembre</h2><div class="drop" data-col="5"><div class="card t-desk" data-id="r5">
     <button class="del" title="Supprimer la release" onclick="delRelease('r5')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -310,15 +367,15 @@
       <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('r5')">Desk</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">Décembre 2026</div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r5',0)">×</span></div>
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r5',1)">×</span></div></div>
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r5',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">À compléter</span><span class="rmf" title="Supprimer" onclick="rmFeat('r5',1)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('r5')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('r5',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5" selected="">Décembre</option></select>
-    </div></div><div class="card t-portail" data-id="r20032n">
+    <button class="addfeat" onclick="addFeat('r5')">+ ajouter une fonctionnalité</button></div><div class="card t-portail" data-id="r20032n">
     <button class="del" title="Supprimer la release" onclick="delRelease('r20032n')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -326,14 +383,14 @@
       <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('r20032n')">Portail</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
+    </div>
     <div class="feats">
-    <div class="feat"><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r20032n',0)">×</span></div></div>
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r20032n',0)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('r20032n')">+ ajouter une fonctionnalité</button>
-    <div class="row2">
-      <label>Mois</label>
-      <select onchange="moveRelease('r20032n',this.value)"><option value="0">Juillet</option><option value="1">Août</option><option value="2">Septembre</option><option value="3">Octobre</option><option value="4">Novembre</option><option value="5" selected="">Décembre</option></select>
-    </div></div></div></div></div>
+    <button class="addfeat" onclick="addFeat('r20032n')">+ ajouter une fonctionnalité</button></div></div></div></div>
     <button class="navbtn right" id="navR" onclick="scrollBoard(1)" aria-label="Défiler à droite">›</button>
   </div>
 
@@ -403,8 +460,13 @@
       "status": "avenir",
       "feats": [
         "Gestion des signatures automatiques",
-        "Mettre en lecture seule les biens retirés de l'IDX"
-      ]
+        "Mettre en lecture seule les biens retirés de l'IDX",
+        "Configurer une ApiKey & Username Skribble par AgencyGroup",
+        "Export mensuel rapport sur les signatures"
+      ],
+      "collapsed": false,
+      "mes": "2026-08-11",
+      "mep": "2026-08-24"
     },
     {
       "id": "r3",
@@ -415,7 +477,9 @@
       "feats": [
         "Import IA des postulations",
         "À compléter"
-      ]
+      ],
+      "mes": "2026-08-31",
+      "mep": "2026-09-14"
     },
     {
       "id": "r4",
@@ -446,7 +510,6 @@
       "date": "Juillet",
       "status": "avenir",
       "feats": [
-        "Sélection des documents à envoyer en validation externe",
         "Import des doc dispo dans le desk dans la messagerie",
         "Option ‘se connecter en tant que’",
         "Saisie manuelle d’un signataire pour les beaux",
@@ -459,7 +522,9 @@
         "Si LPD activée : bloquer envoie en validation interne/externe des postulations non shortlistées",
         "Récupération des 2 PDF de postulations : LPD compliant et avec tous les doc",
         "Optimisation parser IDX"
-      ]
+      ],
+      "mes": "2026-06-24",
+      "mep": "2026-07-15"
     },
     {
       "id": "ri4jidq",
@@ -471,8 +536,13 @@
         "Modification des données personnelles via drawer",
         "Rappels sur les messages",
         "Recalcul du taux d'effort lors du changement de loyer d'un bien dans l'IDX",
-        "Ajouter la liste des statuts de postulation dans la page de détail d'un bien"
-      ]
+        "Ajouter la liste des statuts de postulation dans la page de détail d'un bien",
+        "Gestion des mails en erreur : Dans les cas où un candidat répondant depuis sa BAL supprime la référence de la postulation (dans l’objet et dans le corps du mail), lui renvoyer un email d’erreur pour lui dire que le message n’a pas été traité. ",
+        "Liste des statuts de postulation dans la page de détail d'un bien"
+      ],
+      "collapsed": false,
+      "mep": "2026-08-06",
+      "mes": "2026-07-23"
     },
     {
       "id": "rutyp5k",
@@ -514,6 +584,79 @@
 const MONTHS = ["Juillet 2026","Août 2026","Septembre 2026","Octobre 2026","Novembre 2026","Décembre 2026"];
 const MOIS_AB = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 function fmtDate(v){ if(!v) return "—"; const p=String(v).split('-'); if(p.length!==3) return v; return (+p[2])+' '+MOIS_AB[(+p[1])-1]+' '+p[0]; }
+
+// ===================================================================
+// Auto-publication GitHub + mode lecture seule
+// ===================================================================
+const GH = { owner:"arianerey-code", repo:"roadmap", path:"index.html", branch:"main" };
+const TOKEN_KEY = "roadmapGhToken_v1";
+function getToken(){ try{ return localStorage.getItem(TOKEN_KEY)||""; }catch(e){ return ""; } }
+function setTok(t){ try{ t?localStorage.setItem(TOKEN_KEY,t):localStorage.removeItem(TOKEN_KEY); }catch(e){} }
+
+let EDIT = false, PREVIEW = false;
+function computeEdit(){
+  if(PREVIEW) return false;
+  const p = new URLSearchParams(location.search);
+  if(p.has('view')) return false;
+  return !!getToken() || p.has('edit');
+}
+function applyMode(){
+  EDIT = computeEdit();
+  document.body.classList.toggle('readonly', !EDIT);
+  document.querySelectorAll('[contenteditable]').forEach(el=> el.setAttribute('contenteditable', EDIT ? 'true':'false'));
+  const badge = document.getElementById('modeBadge');
+  if(badge) badge.textContent = EDIT ? 'Édition' : 'Lecture seule';
+}
+
+// ----- Modale token -----
+function openTokenModal(){ const o=document.getElementById('tokOverlay'); if(!o) return;
+  document.getElementById('tokInput').value = getToken(); o.classList.add('show'); document.getElementById('tokInput').focus(); }
+function closeTokenModal(){ const o=document.getElementById('tokOverlay'); if(o) o.classList.remove('show'); }
+function saveToken(){ const v=document.getElementById('tokInput').value.trim(); setTok(v); closeTokenModal(); PREVIEW=false; applyMode();
+  setStatus(v?'✏️ Mode édition activé — tu peux publier.':'Token effacé.', v?'ok':'busy'); }
+function forgetToken(){ setTok(''); const i=document.getElementById('tokInput'); if(i) i.value=''; closeTokenModal(); PREVIEW=false; applyMode(); setStatus('Token oublié — page en lecture seule.','busy'); }
+function previewReadonly(){ PREVIEW=true; applyMode(); setStatus('👁 Aperçu lecteur. Recharge la page pour repasser en édition.','busy'); }
+
+// ----- Toast de statut -----
+let _statusT=null;
+function setStatus(msg, kind){ const s=document.getElementById('ghStatus'); if(!s) return;
+  s.textContent=msg; s.className=(kind||'busy')+' show';
+  if(_statusT) clearTimeout(_statusT);
+  if(kind!=='busy') _statusT=setTimeout(()=>s.classList.remove('show'), 6500);
+}
+
+// ----- Sérialisation (état gravé dans #seed, jamais le token) -----
+function b64utf8(str){ const bytes=new TextEncoder().encode(str); let bin=''; for(const b of bytes) bin+=String.fromCharCode(b); return btoa(bin); }
+function serializeHTML(){
+  const clone = document.documentElement.cloneNode(true);
+  clone.querySelector('#seed').textContent = JSON.stringify(state,null,2);
+  const b = clone.querySelector('body'); if(b){ b.classList.add('readonly'); }
+  const ov = clone.querySelector('#tokOverlay'); if(ov) ov.classList.remove('show');
+  const st = clone.querySelector('#ghStatus'); if(st){ st.className=''; st.textContent=''; }
+  const ti = clone.querySelector('#tokInput'); if(ti){ ti.setAttribute('value',''); ti.value=''; }
+  return "<!DOCTYPE html>\n" + clone.outerHTML;
+}
+
+// ----- Commit vers GitHub -----
+async function publishToGitHub(){
+  const token=getToken();
+  if(!token){ openTokenModal(); return; }
+  const html=serializeHTML();
+  setStatus('⏳ Publication en cours…','busy');
+  const base='https://api.github.com/repos/'+GH.owner+'/'+GH.repo+'/contents/'+encodeURIComponent(GH.path);
+  const headers={ 'Authorization':'Bearer '+token, 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' };
+  try{
+    let sha;
+    const g=await fetch(base+'?ref='+GH.branch,{headers});
+    if(g.status===200){ sha=(await g.json()).sha; }
+    else if(g.status===401||g.status===403){ setStatus('⛔ Token refusé ('+g.status+'). Vérifie le droit « Contents : Read and write ».','err'); return; }
+    else if(g.status!==404){ setStatus('⛔ Lecture du fichier impossible ('+g.status+').','err'); return; }
+    const put=await fetch(base,{ method:'PUT', headers:{...headers,'Content-Type':'application/json'},
+      body:JSON.stringify({ message:'Roadmap Desk — MàJ '+new Date().toLocaleString('fr-FR'), content:b64utf8(html), sha, branch:GH.branch }) });
+    if(put.ok){ setStatus('✅ Publié ! En ligne dans ~30 s sur '+location.host+'.','ok'); }
+    else { let m=''; try{ m=(await put.json()).message||''; }catch(e){} setStatus('⛔ Échec ('+put.status+') '+m,'err'); }
+  }catch(err){ setStatus('⛔ Erreur réseau : '+err.message,'err'); }
+}
 
 let dragKind = null;
 let state = load();
@@ -561,6 +704,7 @@ function render(){
     const drop = board.querySelector(`.drop[data-col="${Math.max(0,Math.min(5,r.month))}"]`);
     if(drop) drop.appendChild(cardEl(r));
   });
+  applyMode();
   updateArrows();
 }
 
@@ -632,8 +776,8 @@ function commitSprintOrder(){
   save();
 }
 function getSprint(id){ return state.sprints.find(x=>x.id===id); }
-function addSprint(){ state.sprints=state.sprints||[]; state.sprints.push({id:"s"+Math.random().toString(36).slice(2,7),name:"",dates:""}); save(); render(); }
-function delSprint(id){ state.sprints = state.sprints.filter(x=>x.id!==id); save(); render(); }
+function addSprint(){ if(!EDIT) return; state.sprints=state.sprints||[]; state.sprints.push({id:"s"+Math.random().toString(36).slice(2,7),name:"",dates:""}); save(); render(); }
+function delSprint(id){ if(!EDIT) return; state.sprints = state.sprints.filter(x=>x.id!==id); save(); render(); }
 
 function cardEl(r){
   const c = document.createElement("div");
@@ -725,20 +869,22 @@ function bindDrop(drop, col){
   });
 }
 
-function moveRelease(id,val){ get(id).month = +val; save(); render(); }
-function toggleType(id){ const r=get(id); r.type=(r.type==="portail")?"desk":"portail"; save(); render(); }
+function moveRelease(id,val){ if(!EDIT) return; get(id).month = +val; save(); render(); }
+function toggleType(id){ if(!EDIT) return; const r=get(id); r.type=(r.type==="portail")?"desk":"portail"; save(); render(); }
 function toggleCollapse(id){ const r=get(id); r.collapsed=(r.collapsed===false); save(); render(); }
-function addFeat(id){ const r=get(id); r.feats.push(""); r.collapsed=false; save(); render();
+function addFeat(id){ if(!EDIT) return; const r=get(id); r.feats.push(""); r.collapsed=false; save(); render();
   // focus the new feature block
   const card = document.querySelector(`.card[data-id="${id}"]`);
   if(card){ const els = card.querySelectorAll('.ftxt'); const last = els[els.length-1]; if(last) last.focus(); }
 }
-function rmFeat(id,idx){ get(id).feats.splice(idx,1); save(); render(); }
+function rmFeat(id,idx){ if(!EDIT) return; get(id).feats.splice(idx,1); save(); render(); }
 function delRelease(id){
+  if(!EDIT) return;
   if(!confirm("Supprimer cette release ?")) return;
   state.releases = state.releases.filter(x=>x.id!==id); save(); render();
 }
 function addRelease(){
+  if(!EDIT) return;
   state.releases.push({id:uid(),title:"Nouvelle release",month:0,date:"",type:"desk",feats:[""]});
   save(); render();
 }
@@ -748,13 +894,7 @@ document.querySelector('[data-meta=title]').addEventListener('input',e=>{ state.
 document.querySelector('[data-meta=subtitle]').addEventListener('input',e=>{ state.meta=state.meta||{}; state.meta.subtitle=e.target.textContent; save(); });
 
 function exportHTML(){
-  const clone = document.documentElement.cloneNode(true);
-  clone.querySelector('#seed').textContent = JSON.stringify(state,null,2);
-  const html = "<!DOCTYPE html>\n" + clone.outerHTML.replace(
-    'const ls = localStorage.getItem("roadmapDeskH2_v2");',
-    'const ls = null; // exported snapshot'
-  );
-  const blob = new Blob([html],{type:"text/html"});
+  const blob = new Blob([serializeHTML()],{type:"text/html"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "roadmap_desk_S2-2026.html";
@@ -763,5 +903,20 @@ function exportHTML(){
 }
 </script>
 
+<div id="ghStatus"></div>
+<div id="tokOverlay">
+  <div id="tokBox">
+    <h3>🔑 Activer le mode édition</h3>
+    <p>Colle ton <b>token GitHub</b> (fine-grained, droit <b>« Contents : Read and write »</b> sur le repo <code>arianerey-code/roadmap</code>). Il reste <b>uniquement dans ce navigateur</b> et n'est jamais publié dans la page. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Créer un token ↗</a></p>
+    <input id="tokInput" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+    <div class="trow">
+      <button id="tokForget" onclick="forgetToken()">Oublier le token</button>
+      <span style="display:flex;gap:8px;">
+        <button onclick="closeTokenModal()">Annuler</button>
+        <button class="primary" onclick="saveToken()">Activer</button>
+      </span>
+    </div>
+  </div>
+</div>
 
 </body></html>
