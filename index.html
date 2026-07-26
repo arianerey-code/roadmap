@@ -188,7 +188,7 @@
   }
 </style>
 </head>
-<body>
+<body class="readonly">
 <div class="wrap">
   <header class="top">
     <div>
@@ -196,7 +196,7 @@
       <p class="subtitle" contenteditable="true" data-meta="subtitle">Vision grosse maille des prochaines releases et de leurs grandes fonctionnalités. Cliquez sur n'importe quel texte pour l'éditer.</p>
     </div>
     <div class="actions">
-      <span id="modeBadge">Lecture seule</span>
+      <span id="modeBadge">Édition</span>
       <button class="primary editonly" onclick="publishToGitHub()">💾 Publier en ligne</button>
       <button class="editonly" onclick="addRelease()">+ Ajouter une release</button>
       <button class="editonly" onclick="previewReadonly()">👁 Aperçu lecteur</button>
@@ -259,7 +259,24 @@
     <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Option ‘se connecter en tant que’</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',1)">×</span></div>
     <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Saisie manuelle d’un signataire pour les beaux</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',2)">×</span></div></div>
     <button class="collapse" onclick="toggleCollapse('r6f5mhn')">▸ Voir les 9 autres</button>
-    <button class="addfeat" onclick="addFeat('r6f5mhn')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Août</h2><div class="drop" data-col="1"><div class="card t-desk" data-id="ri4jidq">
+    <button class="addfeat" onclick="addFeat('r6f5mhn')">+ ajouter une fonctionnalité</button></div><div class="card t-portail" data-id="rqs6tzq">
+    <button class="del" title="Supprimer la release" onclick="delRelease('rqs6tzq')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Portail&nbsp;v3.6 - Blenio</span>
+      <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('rqs6tzq')">Portail</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-07-29"><span class="dval d-mep-v">29 juil. 2026</span></label>
+    </div>
+    <div class="feats">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">[Clients Privés] Gestion de l'archivage des annonces</span><span class="rmf" title="Supprimer" onclick="rmFeat('rqs6tzq',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Retry sur les postulations</span><span class="rmf" title="Supprimer" onclick="rmFeat('rqs6tzq',1)">×</span></div>
+    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">SEO</span><span class="rmf" title="Supprimer" onclick="rmFeat('rqs6tzq',2)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('rqs6tzq')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Août</h2><div class="drop" data-col="1"><div class="card t-desk" data-id="ri4jidq">
     <button class="del" title="Supprimer la release" onclick="delRelease('ri4jidq')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -274,11 +291,8 @@
     <div class="feats">
     <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Modification des données personnelles via drawer</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',0)">×</span></div>
     <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Rappels sur les messages</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',1)">×</span></div>
-    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Recalcul du taux d'effort lors du changement de loyer d'un bien dans l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',2)">×</span></div>
-    <div class="feat" data-fi="3"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="3">Ajouter la liste des statuts de postulation dans la page de détail d'un bien</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',3)">×</span></div>
-    <div class="feat" data-fi="4"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="4">Gestion des mails en erreur :&nbsp;Dans les cas où un candidat répondant depuis sa BAL supprime la référence de la postulation (dans l’objet et dans le corps du mail), lui renvoyer un email d’erreur pour lui dire que le message n’a pas été traité.&nbsp;</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',4)">×</span></div>
-    <div class="feat" data-fi="5"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="5">Liste des statuts de postulation dans la page de détail d'un bien</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',5)">×</span></div></div>
-    <button class="collapse" onclick="toggleCollapse('ri4jidq')">▾ Réduire</button>
+    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Recalcul du taux d'effort lors du changement de loyer d'un bien dans l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('ri4jidq',2)">×</span></div></div>
+    <button class="collapse" onclick="toggleCollapse('ri4jidq')">▸ Voir les 3 autres</button>
     <button class="addfeat" onclick="addFeat('ri4jidq')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Septembre</h2><div class="drop" data-col="2"><div class="card t-desk" data-id="r2">
     <button class="del" title="Supprimer la release" onclick="delRelease('r2')">×</button>
     <div class="chead">
@@ -294,9 +308,8 @@
     <div class="feats">
     <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Gestion des signatures automatiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',0)">×</span></div>
     <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Mettre en lecture seule les biens retirés de l'IDX</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',1)">×</span></div>
-    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Configurer une ApiKey &amp; Username Skribble par AgencyGroup</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',2)">×</span></div>
-    <div class="feat" data-fi="3"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="3">Export mensuel rapport sur les signatures</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',3)">×</span></div></div>
-    <button class="collapse" onclick="toggleCollapse('r2')">▾ Réduire</button>
+    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Configurer une ApiKey &amp; Username Skribble par AgencyGroup</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',2)">×</span></div></div>
+    <button class="collapse" onclick="toggleCollapse('r2')">▸ Voir les 1 autres</button>
     <button class="addfeat" onclick="addFeat('r2')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Octobre</h2><div class="drop" data-col="3"><div class="card t-desk" data-id="r3">
     <button class="del" title="Supprimer la release" onclick="delRelease('r3')">×</button>
     <div class="chead">
@@ -464,7 +477,7 @@
         "Configurer une ApiKey & Username Skribble par AgencyGroup",
         "Export mensuel rapport sur les signatures"
       ],
-      "collapsed": false,
+      "collapsed": true,
       "mes": "2026-08-11",
       "mep": "2026-08-24"
     },
@@ -540,7 +553,7 @@
         "Gestion des mails en erreur : Dans les cas où un candidat répondant depuis sa BAL supprime la référence de la postulation (dans l’objet et dans le corps du mail), lui renvoyer un email d’erreur pour lui dire que le message n’a pas été traité. ",
         "Liste des statuts de postulation dans la page de détail d'un bien"
       ],
-      "collapsed": false,
+      "collapsed": true,
       "mep": "2026-08-06",
       "mes": "2026-07-23"
     },
@@ -576,6 +589,20 @@
         "Refonte dashboard (page objet/détail stat/tableau de bord)"
       ],
       "type": "portail"
+    },
+    {
+      "id": "rqs6tzq",
+      "title": "Portail v3.6 - Blenio",
+      "month": 0,
+      "date": "",
+      "type": "portail",
+      "feats": [
+        "[Clients Privés] Gestion de l'archivage des annonces",
+        "Retry sur les postulations",
+        "SEO"
+      ],
+      "mep": "2026-07-29",
+      "collapsed": false
     }
   ]
 }</script>
@@ -903,12 +930,12 @@ function exportHTML(){
 }
 </script>
 
-<div id="ghStatus"></div>
-<div id="tokOverlay">
+<div id="ghStatus" class=""></div>
+<div id="tokOverlay" class="">
   <div id="tokBox">
     <h3>🔑 Activer le mode édition</h3>
     <p>Colle ton <b>token GitHub</b> (fine-grained, droit <b>« Contents : Read and write »</b> sur le repo <code>arianerey-code/roadmap</code>). Il reste <b>uniquement dans ce navigateur</b> et n'est jamais publié dans la page. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Créer un token ↗</a></p>
-    <input id="tokInput" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+    <input id="tokInput" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false" value="">
     <div class="trow">
       <button id="tokForget" onclick="forgetToken()">Oublier le token</button>
       <span style="display:flex;gap:8px;">
@@ -918,5 +945,6 @@ function exportHTML(){
     </div>
   </div>
 </div>
+
 
 </body></html>
