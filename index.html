@@ -259,7 +259,24 @@
     <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Option ‘se connecter en tant que’</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',1)">×</span></div>
     <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2">Saisie manuelle d’un signataire pour les beaux</span><span class="rmf" title="Supprimer" onclick="rmFeat('r6f5mhn',2)">×</span></div></div>
     <button class="collapse" onclick="toggleCollapse('r6f5mhn')">▸ Voir les 9 autres</button>
-    <button class="addfeat" onclick="addFeat('r6f5mhn')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Août</h2><div class="drop" data-col="1"><div class="card t-desk" data-id="ri4jidq">
+    <button class="addfeat" onclick="addFeat('r6f5mhn')">+ ajouter une fonctionnalité</button></div><div class="card t-portail" data-id="r8ezlrw">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r8ezlrw')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Portail&nbsp;v3.6 - Blenio</span>
+      <span class="rtype t-portail" title="Basculer Desk / Portail" onclick="toggleType('r8ezlrw')">Portail</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-07-29"><span class="dval d-mep-v">29 juil. 2026</span></label>
+    </div>
+    <div class="feats">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Gestion des erreurs à l'envoi des postulations au Desk</span><span class="rmf" title="Supprimer" onclick="rmFeat('r8ezlrw',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Suppression des sessions</span><span class="rmf" title="Supprimer" onclick="rmFeat('r8ezlrw',1)">×</span></div>
+    <div class="feat" data-fi="2"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="2"></span><span class="rmf" title="Supprimer" onclick="rmFeat('r8ezlrw',2)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r8ezlrw')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Août</h2><div class="drop" data-col="1"><div class="card t-desk" data-id="ri4jidq">
     <button class="del" title="Supprimer la release" onclick="delRelease('ri4jidq')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -285,8 +302,8 @@
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">Septembre 2026</div>
     <div class="dates2">
-      <label title="Mise En Staging">MES <input type="date" class="d-mes" value="2026-08-11"><span class="dval d-mes-v">13 août 2026</span></label>
-      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-08-24"><span class="dval d-mep-v">24 août 2026</span></label>
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value="2026-08-13"><span class="dval d-mes-v">13 août 2026</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-08-27"><span class="dval d-mep-v">27 août 2026</span></label>
     </div>
     <div class="feats">
     <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Gestion des signatures automatiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('r2',0)">×</span></div>
@@ -463,7 +480,7 @@
       ],
       "collapsed": false,
       "mes": "2026-08-13",
-      "mep": "2026-08-24"
+      "mep": "2026-08-27"
     },
     {
       "id": "r3",
@@ -573,6 +590,20 @@
         "Refonte dashboard (page objet/détail stat/tableau de bord)"
       ],
       "type": "portail"
+    },
+    {
+      "id": "r8ezlrw",
+      "title": "Portail v3.6 - Blenio",
+      "month": 0,
+      "date": "",
+      "type": "portail",
+      "feats": [
+        "Gestion des erreurs à l'envoi des postulations au Desk",
+        "Suppression des sessions",
+        ""
+      ],
+      "mep": "2026-07-29",
+      "collapsed": false
     }
   ]
 }</script>
