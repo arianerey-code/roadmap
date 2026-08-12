@@ -343,7 +343,22 @@
     <div class="feats">
     <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Refonte dashboard (page objet/détail stat/tableau de bord)</span><span class="rmf" title="Supprimer" onclick="rmFeat('r4hhqck',0)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('r4hhqck')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Novembre</h2><div class="drop" data-col="4"><div class="card t-desk" data-id="r4">
+    <button class="addfeat" onclick="addFeat('r4hhqck')">+ ajouter une fonctionnalité</button></div><div class="card t-desk" data-id="rvvh5hn">
+    <button class="del" title="Supprimer la release" onclick="delRelease('rvvh5hn')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.2.4</span>
+      <span class="rtype t-desk" title="Basculer Desk / Portail" onclick="toggleType('rvvh5hn')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
+    </div>
+    <div class="feats">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Split des bases de données Desk &lt;&gt; Studio</span><span class="rmf" title="Supprimer" onclick="rmFeat('rvvh5hn',0)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('rvvh5hn')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Novembre</h2><div class="drop" data-col="4"><div class="card t-desk" data-id="r4">
     <button class="del" title="Supprimer la release" onclick="delRelease('r4')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -606,6 +621,16 @@
       ],
       "mep": "2026-07-29",
       "collapsed": false
+    },
+    {
+      "id": "rvvh5hn",
+      "title": "Desk v1.2.4",
+      "month": 3,
+      "date": "",
+      "type": "desk",
+      "feats": [
+        "Split des bases de données Desk <> Studio"
+      ]
     }
   ]
 }</script>
