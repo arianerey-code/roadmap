@@ -21,7 +21,7 @@
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1500px;margin:0 auto;padding:20px 26px 14px;height:100vh;
+  .wrap{max-width:none;width:100%;margin:0;padding:16px 20px 10px;height:100vh;
     display:flex;flex-direction:column;}
 
   header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:6px;}
@@ -871,14 +871,17 @@ function scrollToCurrentMonth(){
   const b = document.getElementById('board'); if(!b) return;
   const col = b.querySelectorAll('.col')[currentMonthIndex()]; if(!col) return;
   const prev = b.style.scrollBehavior; b.style.scrollBehavior = 'auto';
-  b.scrollLeft = col.offsetLeft - b.offsetLeft - 14 < 0 ? 0 : col.offsetLeft - 14;
+  b.scrollLeft = Math.max(0, b.scrollLeft + col.getBoundingClientRect().left - b.getBoundingClientRect().left - 14);
   b.style.scrollBehavior = prev; updateArrows();
 }
 function scrollBoard(dir){
   const b = document.getElementById('board');
   const col = b.querySelector('.col');
   const step = (col ? col.offsetWidth : 240) + 14;
-  b.scrollBy({left: dir*step, behavior:'smooth'});
+  const cols=[...b.querySelectorAll('.col')], L=b.getBoundingClientRect().left+14;
+  const cur=cols.findIndex(c=>c.getBoundingClientRect().left>=L-4);
+  const tgt=cols[Math.max(0,Math.min(cols.length-1,(cur<0?0:cur)+dir))];
+  if(tgt) b.scrollBy({left: tgt.getBoundingClientRect().left - L, behavior:'smooth'}); else b.scrollBy({left: dir*step, behavior:'smooth'});
 }
 function updateArrows(){
   const b = document.getElementById('board');
