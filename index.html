@@ -2,13 +2,14 @@
 <html lang="fr"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roadmap Desk — S2 2026</title>
+<title>Roadmap</title>
 <style>
   :root{
     --bg:#f4f6f8; --panel:#ffffff; --ink:#1f2733; --muted:#6b7688;
     --line:#e3e8ef; --accent:#2f6feb;
     --desk:#2f6feb; --desk-bg:#e8f0fe;
     --portail:#7c3aed; --portail-bg:#f1eafe;
+    --cp:#0f8b8d; --cp-bg:#e2f4f4;
     --avenir:#64748b; --avenir-bg:#eef1f6;
     --encours:#2f6feb; --encours-bg:#e8f0fe;
     --risque:#e0872b; --risque-bg:#fdf1e2;
@@ -38,7 +39,7 @@
   .hint{font-size:12.5px;color:var(--muted);font-style:italic;}
 
   .boardwrap{position:relative;flex:1;min-height:0;display:flex;}
-  .board{display:grid;grid-template-columns:repeat(6,minmax(230px,1fr));grid-template-rows:1fr;gap:14px;
+  .board{display:grid;grid-template-columns:repeat(var(--ncols,18),minmax(230px,1fr));grid-template-rows:1fr;gap:14px;
     background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
     padding:14px;height:100%;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;
     scroll-behavior:smooth;scrollbar-width:none;}
@@ -61,12 +62,18 @@
     background:#fff;padding:10px 12px 12px;box-shadow:0 1px 2px rgba(20,30,50,.05);position:relative;}
   .card.t-desk{border-left-color:var(--desk);}
   .card.t-portail{border-left-color:var(--portail);}
+  .card.t-cp{border-left-color:var(--cp);}
   .card.dragging{opacity:.45;}
 
   .rtype{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;cursor:pointer;
     user-select:none;flex:none;letter-spacing:.3px;}
   .rtype.t-desk{background:var(--desk-bg);color:var(--desk);}
   .rtype.t-portail{background:var(--portail-bg);color:var(--portail);}
+  .rtype.t-cp{background:var(--cp-bg);color:var(--cp);}
+  .ltags{display:flex;gap:8px;align-items:center;}
+  .ltags .rtype{cursor:default;pointer-events:none;}
+  .col h2 .yr{font-weight:600;opacity:.65;margin-left:4px;}
+  .col.ystart{border-left:2px dashed var(--line);padding-left:12px;margin-left:-8px;}
   .collapse{background:none;border:none;color:var(--muted);font-size:12px;font-weight:600;
     padding:2px 0;cursor:pointer;align-self:flex-start;}
   .collapse:hover{color:var(--accent);text-decoration:underline;}
@@ -192,7 +199,7 @@
 <div class="wrap">
   <header class="top">
     <div>
-      <h1 contenteditable="true" data-meta="title">Roadmap Desk — 2<sup>e</sup> semestre 2026</h1>
+      <h1 contenteditable="true" data-meta="title">Roadmap</h1>
       <p class="subtitle" contenteditable="true" data-meta="subtitle">Vision grosse maille des prochaines releases et de leurs grandes fonctionnalités. Cliquez sur n'importe quel texte pour l'éditer.</p>
     </div>
     <div class="actions">
@@ -207,6 +214,7 @@
   </header>
 
   <div class="legend">
+    <span class="ltags">Projets : <span class="rtype t-desk">Desk</span><span class="rtype t-portail">Portail</span><span class="rtype t-cp">Clients Privés</span></span>
     <span class="hint">Glissez une carte (poignée ⋮⋮) d'un mois à l'autre • glissez une fonctionnalité (poignée ⋮⋮) vers une autre release • renseignez les dates MES / MEP • cliquez un texte pour l'éditer</span>
   </div>
 
@@ -706,7 +714,12 @@
 }</script>
 
 <script>
-const MONTHS = ["Juillet 2026","Août 2026","Septembre 2026","Octobre 2026","Novembre 2026","Décembre 2026"];
+const MONTHS = ["Juillet 2026","Août 2026","Septembre 2026","Octobre 2026","Novembre 2026","Décembre 2026",
+  "Janvier 2027","Février 2027","Mars 2027","Avril 2027","Mai 2027","Juin 2027",
+  "Juillet 2027","Août 2027","Septembre 2027","Octobre 2027","Novembre 2027","Décembre 2027"];
+const TYPES = { desk:"Desk", portail:"Portail", cp:"Clients Privés" };
+const TYPE_ORDER = ["desk","portail","cp"];
+function typeOf(r){ return TYPES[r.type] ? r.type : "desk"; }
 const MOIS_AB = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 function fmtDate(v){ if(!v) return "—"; const p=String(v).split('-'); if(p.length!==3) return v; return (+p[2])+' '+MOIS_AB[(+p[1])-1]+' '+p[0]; }
 
@@ -799,6 +812,7 @@ async function publishToGitHub(){
 let dragKind = null;
 let state = load();
 render();
+scrollToCurrentMonth();
 document.getElementById('board').addEventListener('scroll', updateArrows);
 window.addEventListener('resize', updateArrows);
 
@@ -828,10 +842,12 @@ function render(){
   renderSprints();
   const board = document.getElementById("board");
   board.innerHTML = "";
+  board.style.setProperty('--ncols', MONTHS.length);
   MONTHS.forEach((m,i)=>{
     const col = document.createElement("div");
-    col.className = "col";
-    col.innerHTML = `<h2>${m.replace(" 2026","")}</h2>`;
+    const [mn, yr] = m.split(" ");
+    col.className = "col" + (i>0 && mn==="Janvier" ? " ystart" : "");
+    col.innerHTML = `<h2>${mn}<span class="yr">${yr}</span></h2>`;
     const drop = document.createElement("div");
     drop.className = "drop"; drop.dataset.col = i;
     bindDrop(drop, col);
@@ -839,13 +855,25 @@ function render(){
     board.appendChild(col);
   });
   state.releases.forEach(r=>{
-    const drop = board.querySelector(`.drop[data-col="${Math.max(0,Math.min(5,r.month))}"]`);
+    const drop = board.querySelector(`.drop[data-col="${Math.max(0,Math.min(MONTHS.length-1,r.month))}"]`);
     if(drop) drop.appendChild(cardEl(r));
   });
   applyMode();
   updateArrows();
 }
 
+function currentMonthIndex(){
+  const d = new Date(); const [m0,y0] = MONTHS[0].split(" ");
+  const start = (+y0)*12 + ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"].indexOf(m0);
+  return Math.max(0, Math.min(MONTHS.length-1, d.getFullYear()*12 + d.getMonth() - start));
+}
+function scrollToCurrentMonth(){
+  const b = document.getElementById('board'); if(!b) return;
+  const col = b.querySelectorAll('.col')[currentMonthIndex()]; if(!col) return;
+  const prev = b.style.scrollBehavior; b.style.scrollBehavior = 'auto';
+  b.scrollLeft = col.offsetLeft - b.offsetLeft - 14 < 0 ? 0 : col.offsetLeft - 14;
+  b.style.scrollBehavior = prev; updateArrows();
+}
 function scrollBoard(dir){
   const b = document.getElementById('board');
   const col = b.querySelector('.col');
@@ -919,11 +947,11 @@ function delSprint(id){ if(!EDIT) return; state.sprints = state.sprints.filter(x
 
 function cardEl(r){
   const c = document.createElement("div");
-  const type = (r.type==="portail") ? "portail" : "desk";
+  const type = typeOf(r);
   c.className = "card t-"+type;
   c.dataset.id = r.id;
 
-  const monthOpts = MONTHS.map((m,i)=>`<option value="${i}" ${i===r.month?"selected":""}>${m.replace(" 2026","")}</option>`).join("");
+  const monthOpts = MONTHS.map((m,i)=>`<option value="${i}" ${i===r.month?"selected":""}>${m}</option>`).join("");
 
   const collapsible = r.feats.length > 3;
   const collapsed = collapsible && (r.collapsed !== false);
@@ -939,7 +967,7 @@ function cardEl(r){
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
       <span class="rel-title" contenteditable="true" data-f="title">${esc(r.title)}</span>
-      <span class="rtype t-${type}" title="Basculer Desk / Portail" onclick="toggleType('${r.id}')">${type==="portail"?"Portail":"Desk"}</span>
+      <span class="rtype t-${type}" title="Changer de projet : Desk → Portail → Clients Privés" onclick="toggleType('${r.id}')">${TYPES[type]}</span>
     </div>
     <div class="rel-date" contenteditable="true" data-f="date">${esc(r.date)}</div>
     <div class="dates2">
@@ -991,24 +1019,57 @@ function cardEl(r){
   // drag & drop — only from the grip handle so text stays editable
   const grip = c.querySelector('.grip');
   grip.addEventListener('mousedown',()=>{ c.setAttribute('draggable','true'); });
-  c.addEventListener('dragstart',e=>{ dragKind="rel"; e.dataTransfer.setData('text/plain','rel:'+r.id); e.dataTransfer.effectAllowed='move'; c.classList.add('dragging'); });
-  c.addEventListener('dragend',()=>{ dragKind=null; c.classList.remove('dragging'); c.removeAttribute('draggable'); });
+  c.addEventListener('dragstart',e=>{ dragKind="rel"; relOverDrop=null; relDropped=false; e.dataTransfer.setData('text/plain','rel:'+r.id); e.dataTransfer.effectAllowed='move'; c.classList.add('dragging'); });
+  c.addEventListener('dragend',()=>{
+    const wasRel = dragKind==="rel"; dragKind=null; c.classList.remove('dragging'); c.removeAttribute('draggable');
+    document.querySelectorAll('.col.over').forEach(x=>x.classList.remove('over'));
+    if(!wasRel || relDropped) return;
+    const drop = c.closest('.drop'); // lâchée sans évènement "drop" (ex. pendant un défilement) : on garde la position affichée
+    if(drop && relOverDrop) commitRelDrop(r.id, drop); else render();
+  });
   return c;
 }
 
+let relOverDrop = null, relDropped = false;
+// place la release dans la colonne visée et fige l'ordre vertical tel qu'affiché
+function commitRelDrop(id, drop){
+  relDropped = true;
+  const r = get(id); if(!r || !drop) return;
+  r.month = +drop.dataset.col;
+  const ids = [...document.querySelectorAll('#board .card')].map(el=>el.dataset.id);
+  if(!ids.includes(id)) ids.push(id);
+  state.releases.sort((a,b)=> ids.indexOf(a.id) - ids.indexOf(b.id));
+  save(); render();
+}
+function dragAfterY(drop, y){
+  let best = {off:-Infinity, el:null};
+  drop.querySelectorAll('.card:not(.dragging)').forEach(el=>{
+    const b = el.getBoundingClientRect(); const off = y - (b.top + b.height/2);
+    if(off < 0 && off > best.off) best = {off, el};
+  });
+  return best.el;
+}
 function bindDrop(drop, col){
-  drop.addEventListener('dragover',e=>{ if(dragKind!=="rel") return; e.preventDefault(); e.dataTransfer.dropEffect='move'; col.classList.add('over'); });
+  drop.addEventListener('dragover',e=>{
+    if(dragKind!=="rel") return; e.preventDefault(); e.dataTransfer.dropEffect='move'; col.classList.add('over'); relOverDrop = drop;
+    const rb = drop.getBoundingClientRect(); // défilement auto près des bords de la colonne
+    if(e.clientY < rb.top + 40) drop.scrollTop -= 14; else if(e.clientY > rb.bottom - 40) drop.scrollTop += 14;
+    const dragging = document.querySelector('.card.dragging'); if(!dragging) return;
+    const after = dragAfterY(drop, e.clientY);
+    if(after==null){ if(dragging.parentNode!==drop || dragging.nextSibling) drop.appendChild(dragging); }
+    else if(after!==dragging.nextSibling) drop.insertBefore(dragging, after);
+  });
   drop.addEventListener('dragleave',e=>{ if(!drop.contains(e.relatedTarget)) col.classList.remove('over'); });
   drop.addEventListener('drop',e=>{
     if(dragKind!=="rel") return;
     e.preventDefault(); col.classList.remove('over');
     const id = String(e.dataTransfer.getData('text/plain')||'').replace('rel:','');
-    if(get(id)){ get(id).month = +drop.dataset.col; save(); render(); }
+    commitRelDrop(id, drop);
   });
 }
 
 function moveRelease(id,val){ if(!EDIT) return; get(id).month = +val; save(); render(); }
-function toggleType(id){ if(!EDIT) return; const r=get(id); r.type=(r.type==="portail")?"desk":"portail"; save(); render(); }
+function toggleType(id){ if(!EDIT) return; const r=get(id); r.type=TYPE_ORDER[(TYPE_ORDER.indexOf(typeOf(r))+1)%TYPE_ORDER.length]; save(); render(); }
 function toggleCollapse(id){ const r=get(id); r.collapsed=(r.collapsed===false); save(); render(); }
 function addFeat(id){ if(!EDIT) return; const r=get(id); r.feats.push(""); r.collapsed=false; save(); render();
   // focus the new feature block
@@ -1035,7 +1096,7 @@ function exportHTML(){
   const blob = new Blob([serializeHTML()],{type:"text/html"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "roadmap_desk_S2-2026.html";
+  a.download = "roadmap.html";
   a.click();
   URL.revokeObjectURL(a.href);
 }
