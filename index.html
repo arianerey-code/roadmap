@@ -249,7 +249,7 @@
     <div class="sdate" contenteditable="true">30 nov. -&gt; 18 déc.</div></div></div>
 
   <div class="boardwrap">
-    <button class="navbtn left" id="navL" onclick="scrollBoard(-1)" aria-label="Défiler à gauche">‹</button>
+    <button class="navbtn left hidden" id="navL" onclick="scrollBoard(-1)" aria-label="Défiler à gauche">‹</button>
     <div class="board" id="board" style="--ncols: 18;"><div class="col"><h2>Juillet<span class="yr">2026</span></h2><div class="drop" data-col="0"><div class="card t-desk" data-id="r6f5mhn">
     <button class="del" title="Supprimer la release" onclick="delRelease('r6f5mhn')">×</button>
     <div class="chead">
@@ -405,7 +405,22 @@
     <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Statistiques</span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',0)">×</span></div>
     <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('rutyp5k',1)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('rutyp5k')">+ ajouter une fonctionnalité</button></div><div class="card t-desk" data-id="rvvh5hn">
+    <button class="addfeat" onclick="addFeat('rutyp5k')">+ ajouter une fonctionnalité</button></div><div class="card t-desk" data-id="rl4h254">
+    <button class="del" title="Supprimer la release" onclick="delRelease('rl4h254')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">Desk v1.2.5</span>
+      <span class="rtype t-desk" title="Changer de projet : Desk → Portail → Clients Privés" onclick="toggleType('rl4h254')">Desk</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value="2026-10-21"><span class="dval d-mep-v">21 oct. 2026</span></label>
+    </div>
+    <div class="feats">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Nouveau process de signature électronique</span><span class="rmf" title="Supprimer" onclick="rmFeat('rl4h254',0)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('rl4h254')">+ ajouter une fonctionnalité</button></div><div class="card t-desk" data-id="rvvh5hn">
     <button class="del" title="Supprimer la release" onclick="delRelease('rvvh5hn')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -418,8 +433,8 @@
       <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
     </div>
     <div class="feats">
-    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Split des bases de données Desk &lt;&gt; Studio</span><span class="rmf" title="Supprimer" onclick="rmFeat('rvvh5hn',0)">×</span></div>
-    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Clients privés (studio)</span><span class="rmf" title="Supprimer" onclick="rmFeat('rvvh5hn',1)">×</span></div></div>
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Split des projets Desk &lt;&gt; Studio</span><span class="rmf" title="Supprimer" onclick="rmFeat('rvvh5hn',0)">×</span></div>
+    <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Début dev Clients privés (studio)</span><span class="rmf" title="Supprimer" onclick="rmFeat('rvvh5hn',1)">×</span></div></div>
     
     <button class="addfeat" onclick="addFeat('rvvh5hn')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Novembre<span class="yr">2026</span></h2><div class="drop" data-col="4"><div class="card t-desk" data-id="r5">
     <button class="del" title="Supprimer la release" onclick="delRelease('r5')">×</button>
@@ -436,22 +451,7 @@
     <div class="feats">
     <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Demande de contact</span><span class="rmf" title="Supprimer" onclick="rmFeat('r5',0)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('r5')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Décembre<span class="yr">2026</span></h2><div class="drop" data-col="5"><div class="card t-portail" data-id="r20032n">
-    <button class="del" title="Supprimer la release" onclick="delRelease('r20032n')">×</button>
-    <div class="chead">
-      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
-      <span class="rel-title" contenteditable="true" data-f="title">PORTAIL</span>
-      <span class="rtype t-portail" title="Changer de projet : Desk → Portail → Clients Privés" onclick="toggleType('r20032n')">Portail</span>
-    </div>
-    <div class="rel-date" contenteditable="true" data-f="date"></div>
-    <div class="dates2">
-      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
-      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
-    </div>
-    <div class="feats">
-    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r20032n',0)">×</span></div></div>
-    
-    <button class="addfeat" onclick="addFeat('r20032n')">+ ajouter une fonctionnalité</button></div><div class="card t-desk" data-id="rmwovj2">
+    <button class="addfeat" onclick="addFeat('r5')">+ ajouter une fonctionnalité</button></div><div class="card t-desk" data-id="rmwovj2">
     <button class="del" title="Supprimer la release" onclick="delRelease('rmwovj2')">×</button>
     <div class="chead">
       <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
@@ -467,7 +467,22 @@
     <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Split des DB</span><span class="rmf" title="Supprimer" onclick="rmFeat('rmwovj2',0)">×</span></div>
     <div class="feat" data-fi="1"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="1">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('rmwovj2',1)">×</span></div></div>
     
-    <button class="addfeat" onclick="addFeat('rmwovj2')">+ ajouter une fonctionnalité</button></div></div></div><div class="col ystart"><h2>Janvier<span class="yr">2027</span></h2><div class="drop" data-col="6"></div></div><div class="col"><h2>Février<span class="yr">2027</span></h2><div class="drop" data-col="7"></div></div><div class="col"><h2>Mars<span class="yr">2027</span></h2><div class="drop" data-col="8"></div></div><div class="col"><h2>Avril<span class="yr">2027</span></h2><div class="drop" data-col="9"></div></div><div class="col"><h2>Mai<span class="yr">2027</span></h2><div class="drop" data-col="10"></div></div><div class="col"><h2>Juin<span class="yr">2027</span></h2><div class="drop" data-col="11"></div></div><div class="col"><h2>Juillet<span class="yr">2027</span></h2><div class="drop" data-col="12"></div></div><div class="col"><h2>Août<span class="yr">2027</span></h2><div class="drop" data-col="13"></div></div><div class="col"><h2>Septembre<span class="yr">2027</span></h2><div class="drop" data-col="14"></div></div><div class="col"><h2>Octobre<span class="yr">2027</span></h2><div class="drop" data-col="15"></div></div><div class="col"><h2>Novembre<span class="yr">2027</span></h2><div class="drop" data-col="16"></div></div><div class="col"><h2>Décembre<span class="yr">2027</span></h2><div class="drop" data-col="17"></div></div></div>
+    <button class="addfeat" onclick="addFeat('rmwovj2')">+ ajouter une fonctionnalité</button></div></div></div><div class="col"><h2>Décembre<span class="yr">2026</span></h2><div class="drop" data-col="5"><div class="card t-portail" data-id="r20032n">
+    <button class="del" title="Supprimer la release" onclick="delRelease('r20032n')">×</button>
+    <div class="chead">
+      <span class="grip" title="Glisser pour déplacer">⋮⋮</span>
+      <span class="rel-title" contenteditable="true" data-f="title">PORTAIL</span>
+      <span class="rtype t-portail" title="Changer de projet : Desk → Portail → Clients Privés" onclick="toggleType('r20032n')">Portail</span>
+    </div>
+    <div class="rel-date" contenteditable="true" data-f="date"></div>
+    <div class="dates2">
+      <label title="Mise En Staging">MES <input type="date" class="d-mes" value=""><span class="dval d-mes-v">—</span></label>
+      <label title="Mise En Prod">MEP <input type="date" class="d-mep" value=""><span class="dval d-mep-v">—</span></label>
+    </div>
+    <div class="feats">
+    <div class="feat" data-fi="0"><span class="fgrip" title="Glisser vers une autre release">⋮⋮</span><span class="ftxt" contenteditable="true" data-fi="0">Clients Privés</span><span class="rmf" title="Supprimer" onclick="rmFeat('r20032n',0)">×</span></div></div>
+    
+    <button class="addfeat" onclick="addFeat('r20032n')">+ ajouter une fonctionnalité</button></div></div></div><div class="col ystart"><h2>Janvier<span class="yr">2027</span></h2><div class="drop" data-col="6"></div></div><div class="col"><h2>Février<span class="yr">2027</span></h2><div class="drop" data-col="7"></div></div><div class="col"><h2>Mars<span class="yr">2027</span></h2><div class="drop" data-col="8"></div></div><div class="col"><h2>Avril<span class="yr">2027</span></h2><div class="drop" data-col="9"></div></div><div class="col"><h2>Mai<span class="yr">2027</span></h2><div class="drop" data-col="10"></div></div><div class="col"><h2>Juin<span class="yr">2027</span></h2><div class="drop" data-col="11"></div></div><div class="col"><h2>Juillet<span class="yr">2027</span></h2><div class="drop" data-col="12"></div></div><div class="col"><h2>Août<span class="yr">2027</span></h2><div class="drop" data-col="13"></div></div><div class="col"><h2>Septembre<span class="yr">2027</span></h2><div class="drop" data-col="14"></div></div><div class="col"><h2>Octobre<span class="yr">2027</span></h2><div class="drop" data-col="15"></div></div><div class="col"><h2>Novembre<span class="yr">2027</span></h2><div class="drop" data-col="16"></div></div><div class="col"><h2>Décembre<span class="yr">2027</span></h2><div class="drop" data-col="17"></div></div></div>
     <button class="navbtn right" id="navR" onclick="scrollBoard(1)" aria-label="Défiler à droite">›</button>
   </div>
 
@@ -672,14 +687,25 @@
       "collapsed": false
     },
     {
+      "id": "rl4h254",
+      "title": "Desk v1.2.5",
+      "month": 3,
+      "date": "",
+      "type": "desk",
+      "feats": [
+        "Nouveau process de signature électronique"
+      ],
+      "mep": "2026-10-21"
+    },
+    {
       "id": "rvvh5hn",
       "title": "Desk v1.2.4",
       "month": 3,
       "date": "Octobre 2026",
       "type": "desk",
       "feats": [
-        "Split des bases de données Desk <> Studio",
-        "Clients privés (studio)"
+        "Split des projets Desk <> Studio",
+        "Début dev Clients privés (studio)"
       ],
       "collapsed": false
     },
@@ -691,6 +717,18 @@
       "status": "avenir",
       "feats": [
         "Demande de contact"
+      ],
+      "collapsed": false
+    },
+    {
+      "id": "rmwovj2",
+      "title": "Desk v1.5.0",
+      "month": 4,
+      "date": "Décembre 2026",
+      "type": "desk",
+      "feats": [
+        "Split des DB",
+        "Clients Privés"
       ]
     },
     {
@@ -703,17 +741,6 @@
         "Clients Privés"
       ],
       "type": "portail"
-    },
-    {
-      "id": "rmwovj2",
-      "title": "Desk v1.5.0",
-      "month": 5,
-      "date": "Décembre 2026",
-      "type": "desk",
-      "feats": [
-        "Split des DB",
-        "Clients Privés"
-      ]
     }
   ]
 }</script>
